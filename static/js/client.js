@@ -13,6 +13,14 @@ window.onload = function() {
 	Crafty.scene("game", function() {
 		Crafty.c("bomberman", {
 			init: function() {
+				if( !this.has("2D") ) {
+					this.addComponent("2D");
+				}
+
+				if( !this.has("Canvas") ) {
+					this.addComponent("Canvas");
+				}
+
 				if( !this.has("color") ) {
 					this.addComponent("color");
 				}
@@ -23,18 +31,13 @@ window.onload = function() {
 					w: 10,
 					h: 10
 				})
-				.color("blue");
+				.color("red");
 			}
 		});
 
-		Crafty.e("player, bomberman, ServerControls, controls")
-		.attr({
-			x: 0,
-			y: 0,
-			session_id: null
-		})
-		.bind("enterframe", function() {
-		});
+		Crafty.e("player, ServerControls, controls")
+			.bind("enterframe", function() {
+			});
 	});
 
 	socket.connect();
@@ -48,11 +51,9 @@ window.onload = function() {
 		for( var i = 0 ; i < game_state.length ; i++ ) {
 			var obj = game_state[i];
 
-			if( game_objects[obj.object_id] ) {
-				console.log(".");
-			} else {
-				game_objects[obj.object_id] = {};
-				console.log("create " + obj.object_id);
+			if( !game_objects[obj.object_id] ) {
+				game_objects[obj.object_id] = Crafty.e("bomberman").attr({x: obj.pos.x, y: obj.pos.y}).color("blue");
+				console.log("new game object: " + obj.object_id);
 			}
 		}
 	});
