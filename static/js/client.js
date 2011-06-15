@@ -1,7 +1,5 @@
 
 window.onload = function() {
-  console.log("init");
-
   var SCREEN_WIDTH = 400, SCREEN_HEIGHT = 400;
 
   Crafty.init(SCREEN_WIDTH, SCREEN_HEIGHT);
@@ -10,7 +8,7 @@ window.onload = function() {
   Crafty.stage.elem.style.background = "#eee";
 
   Crafty.scene("game", function() {
-    console.log("hm");
+    console.log("crafty start");
   });
 
   var socket = new io.Socket("localhost", {port: 1234});
