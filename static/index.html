@@ -1,30 +1,12 @@
-<script src="js/jquery-1.6.min.js" type="text/javascript" charset="utf-8"></script>
-<script src="js/crafty-min.js" type="text/javascript" charset="utf-8"></script>
-<script src="/socket.io/socket.io.js" type="text/javascript" charset="utf-8"></script>
-
-<script type="text/javascript" charset="utf-8">
-
-window.onload = function() {
-  var socket = new io.Socket("localhost", {port: 1234});
-  
-  socket.connect();
-  socket.on("connect", function() {
-      console.log("connect!");
-  });
-  socket.on("message", function(msg) {
-      console.log("received: " + msg);
-  });
-  socket.on("disconnect", function() {
-      console.log("disconnect!");
-  });
-
-  $("#send").click(function() {
-    var msg = "game packet";
-    console.log("sending: " + msg);
-    socket.send(msg);
-  });
-}
-
-</script>
-
-<button id="send">SEND</button>
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+  <title>Bomberman Clone</title>
+  <script src="/socket.io/socket.io.js" type="text/javascript" charset="utf-8"></script>
+  <script src="js/crafty.js" type="text/javascript" charset="utf-8"></script>
+  <script src="js/client.js" type="text/javascript" charset="utf-8"></script>
+</head>
+<body>
+</body>
+</html>
