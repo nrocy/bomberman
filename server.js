@@ -26,6 +26,8 @@ socket.on("connection", function(client) {
 	client.on("disconnect", function() {
 		for( var i = 0 ; i < game_state.length ; i++ ) {
 			if( game_state[i].object_id === client.sessionId ) {
+				game_state[i].dead = true;
+				socket.broadcast(json(game_state));
 				game_state.splice(i, 1);
 			}
 		}
