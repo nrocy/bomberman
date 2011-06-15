@@ -10,6 +10,12 @@ window.onload = function() {
 
 	Crafty.stage.elem.style.background = "#eee";
 
+	Crafty.load(["images/bomberman.png"], function() {
+		Crafty.sprite(1, "images/bomberman.png", {
+			s_bomberman: [0, 0, 16, 24]
+		}, 9, 9);
+	});
+
 	Crafty.scene("game", function() {
 		Crafty.c("bomberman", {
 			init: function() {
@@ -23,6 +29,10 @@ window.onload = function() {
 
 				if( !this.has("color") ) {
 					this.addComponent("color");
+				}
+
+				if( !this.has("animate") ) {
+					this.addComponent("animate");
 				}
 
 				this.attr({
@@ -84,7 +94,13 @@ window.onload = function() {
 			var obj = game_state[i];
 
 			if( !game_objects[obj.object_id] && !obj.dead ) {
-				game_objects[obj.object_id] = Crafty.e( obj.type ).attr({x: obj.pos.x, y: obj.pos.y});
+				var components = (obj.type === "bomberman" ? "bomberman, s_bomberman" : "bomb");
+
+				game_objects[obj.object_id] = 
+					Crafty.e(components)
+						.attr({x: obj.pos.x, y: obj.pos.y});
+
+				console.log("new game object: " + obj.object_id);
 			} else {
 				if( obj.dead ) {
 					console.log (obj.type);
@@ -148,6 +164,7 @@ window.onload = function() {
 					__controls.space = true;
 				}
 			});
+
 			this.bind ("enterframe", function (e) {
 				socket.send (__controls);
 			});
