@@ -15,14 +15,13 @@ window.onload = function() {
         y: 0
       })
       .bind("enterframe", function() {
-        socket.send({up: true});
       })
   });
 
   socket.connect();
 
   socket.on("connect", function() {
-    console.log("connect!");
+    socket.send({up: true});
   });
 
   socket.on("message", function(msg) {
