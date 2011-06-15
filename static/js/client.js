@@ -77,7 +77,7 @@ window.onload = function() {
 			}
 		});	
 
-		Crafty.e("bomberman, ServerControls, controls")
+		Crafty.e("ServerControls, controls")
 			.bind("enterframe", function() {
 			});
 	});
