@@ -38,7 +38,8 @@ socket.on("connection", function(client) {
 		type: "bomberman", 
 		pos: {x:  random(0, 400), y: random(0, 400)}, 
 		created_at: 1, 
-		dead: false
+		dead: false,
+		bombsDropped : 0
 	});
 
 	client.send(json(game_state));
@@ -54,41 +55,49 @@ socket.on("connection", function(client) {
 
 		if( player ) {
 			if( msg.up ) {
-				player.pos.y--;
+				if (player.pos.y > 0) player.pos.y--;
 			}
 			if( msg.down ) {
-				player.pos.y++;
+				if (player.pos.y < 400 - 24) player.pos.y++;
 			}
 			if( msg.left ) {
-				player.pos.x--;
+				if (player.pos.x > 0) player.pos.x--;
 			}
 			if( msg.right ) {
-				player.pos.x++;
+				if (player.pos.x < 400 - 16) player.pos.x++;
 			}
 			if( msg.space ) {
 				var id = "bomb" + uid++;
-				game_state.push ({
-					object_id: id,
-					type: "bomb",
-					pos: {x: player.pos.x, y: player.pos.y},
-					created_at: 1,
-					dead : false
-				});
+				if (player.bombsDropped === 0) { // todo: fix for higher levels!
+
+						game_state.push ({
+								object_id: id,
+								type: "bomb",
+								pos: {x: player.pos.x, y: player.pos.y},
+								created_at: 1,
+								dead : false,
+								belongsTo: player
+						});
+						player.droppedBomb = new Date().getTime();
+						player.bombsDropped++; 
+				}
+
 
 				setTimeout ( (function () {
-								for (var i = 0; i < game_state.length; i++) {
-									if (game_state[i].object_id === id) {
+						for (var i = 0; i < game_state.length; i++) {
+								if (game_state[i].object_id === id) {
 										game_state[i].dead = true;
+										game_state[i].belongsTo.bombsDropped--;
 										socket.broadcast(json(game_state));
 										game_state.splice (i, 1);
 										break;
-									}
 								}
-							}), 1000);
+						}
+				}), 1000);
 
 
 			}
-			
+
 			socket.broadcast(json(game_state));
 		}
 	});
@@ -96,6 +105,6 @@ socket.on("connection", function(client) {
 });
 
 function random(min, max) {
-	return ~~(min + ( max - min ) * Math.random());
+		return ~~(min + ( max - min ) * Math.random());
 }
 
