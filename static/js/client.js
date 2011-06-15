@@ -8,16 +8,14 @@ window.onload = function() {
   Crafty.stage.elem.style.background = "#eee";
 
   Crafty.scene("game", function() {
-    Crafty.e("player")
+    Crafty.e("player, ServerControls, controls")
       .attr({
         x: 0,
         y: 0
       })
       .bind("enterframe", function() {
-      })
+      });
   });
-
-  var socket = new io.Socket(location.hostname, {port: 1234});
 
   socket.connect();
 
@@ -38,50 +36,60 @@ window.onload = function() {
   });
 
   Crafty.c ("ServerControls", {
-			__controls : {
+			init : function () {
+
+
+
+				var __controls = {
 						left : false,
 						right : false,
 						up : false,
 						down: false,
 						space : false
-			},
-			ServerControls : function () {
-				console.log("Initialise ServerControls");
-				this.bind ("keydown", function (e) {
-						__controls.up = __controls.down = __controls.left = __controls.right = false;
-						if (e.keyCode == Crafty.keys.UP) {
-							__controls.up = true;
-						}
-						if (e.keyCode == Crafty.keys.DOWN) {
-							__controls.down = true;
-						}
-						if (e.keyCode == Crafty.keys.LEFT) {
-							__controls.left = true;
-						}
-						if (e.keyCode == Crafty.keys.RIGHT) {
-							__controls.right = true;
-						}
-						if (e.keyCode == Crafty.keys.SPACE) {
-							__controls.space = true;
-						}
-						socket.send (__controls);
-				});
+				};
+
+
+				if (!this.has('controls')) {
+					this.addComponent ('controls');
+				}
 				this.bind ("keyup", function (e) {
-						if (e.keyCode == Crafty.keys.UP) {
+						if (e.keyCode == Crafty.keys.UP_ARROW) {
 							__controls.up = false;
 						}
-						if (e.keyCode == Crafty.keys.DOWN) {
+						if (e.keyCode == Crafty.keys.DOWN_ARROW) {
 							__controls.down = false;
 						}
-						if (e.keyCode == Crafty.keys.LEFT) {
+						if (e.keyCode == Crafty.keys.LEFT_ARROW) {
 							__controls.left = false;
 						}
-						if (e.keyCode == Crafty.keys.RIGHT) {
+						if (e.keyCode == Crafty.keys.RIGHT_ARROW) {
 							__controls.right = false;
 						}
 						if (e.keyCode == Crafty.keys.SPACE) {
-							__controls.space = true;
+							__controls.space = false;
 						}
+				});
+				this.bind("keydown", function (e) {
+					if (e.keyCode == Crafty.keys.UP_ARROW) {
+						__controls.up = true;
+					}
+					if (e.keyCode == Crafty.keys.DOWN_ARROW) {
+						__controls.down = true;
+					}
+					if (e.keyCode == Crafty.keys.LEFT_ARROW) {
+						__controls.left = true;
+					}
+					if (e.keyCode == Crafty.keys.RIGHT_ARROW) {
+						__controls.right = true;
+					}
+					if (e.keyCode == Crafty.keys.SPACE) {
+						__controls.space = true;
+					}
+				});
+
+
+				this.bind ("enterframe", function (e) {
+					socket.send (__controls);
 				});
 				return this;
 			}
