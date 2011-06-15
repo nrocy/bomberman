@@ -34,7 +34,7 @@ socket.on("connection", function(client) {
 	game_state.push({
 		object_id: client.sessionId, 
 		type: "player", 
-		pos: {x: 1, y: 1}, 
+		pos: {x:  random(0, 400), y: random(0, 400)}, 
 		created_at: 1, 
 		dead: false
 	});
@@ -72,4 +72,8 @@ socket.on("connection", function(client) {
 	});
 
 });
+
+function random(min, max) {
+	return ~~(min + ( max - min ) * Math.random());
+}
 
