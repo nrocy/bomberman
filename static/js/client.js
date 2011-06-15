@@ -11,7 +11,7 @@ window.onload = function() {
     console.log("crafty start");
   });
 
-  var socket = new io.Socket("localhost", {port: 1234});
+  var socket = new io.Socket(location.hostname, {port: 1234});
 
   socket.connect();
   socket.on("connect", function() {
