@@ -29,6 +29,14 @@ server.listen(1234);
 var socket = io.listen(server);
 socket.on("connection", function(client) {
 
+  client.on("disconnect", function() {
+    for( var i = 0 ; i < game_state.length ; i++ ) {
+      if( game_state[i].object_id === client.sessionId ) {
+        game_state.splice(i, 1);
+      }
+    }
+  });
+
   game_state.push({
     object_id: client.sessionId, 
     type: "player", 
