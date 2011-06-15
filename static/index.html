@@ -1,11 +1,10 @@
 <script src="js/jquery-1.6.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="js/crafty-min.js" type="text/javascript" charset="utf-8"></script>
 <script src="/socket.io/socket.io.js" type="text/javascript" charset="utf-8"></script>
 
 <script type="text/javascript" charset="utf-8">
 
 window.onload = function() {
-  //WEB_SOCKET_SWF_LOCATION = "http://localhost:1234/socket.io/WebSocketMain.swf";
-
   var socket = new io.Socket("localhost", {port: 1234});
   
   socket.connect();
