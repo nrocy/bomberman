@@ -52,8 +52,15 @@ window.onload = function() {
 			var obj = game_state[i];
 
 			if( !game_objects[obj.object_id] ) {
-				game_objects[obj.object_id] = Crafty.e("bomberman").attr({x: obj.pos.x, y: obj.pos.y}).color("blue");
+				game_objects[obj.object_id] = Crafty.e("bomberman").attr({x: obj.pos.x, y: obj.pos.y});
 				console.log("new game object: " + obj.object_id);
+			} else {
+				if( obj.dead ) {
+					game_objects[obj.object_id].destroy();
+					delete game_objects[obj.object_id];
+				} else {
+					game_objects[obj.object_id].attr({x: obj.pos.x, y: obj.pos.y});
+				}
 			}
 		}
 	});
