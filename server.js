@@ -22,7 +22,7 @@ server.listen(1234);
 
 var socket = io.listen(server);
 socket.on("connection", function(client) {
-
+	var uid = 0;
 	client.on("disconnect", function() {
 		for( var i = 0 ; i < game_state.length ; i++ ) {
 			if( game_state[i].object_id === client.sessionId ) {
@@ -35,7 +35,7 @@ socket.on("connection", function(client) {
 
 	game_state.push({
 		object_id: client.sessionId, 
-		type: "player", 
+		type: "bomberman", 
 		pos: {x:  random(0, 400), y: random(0, 400)}, 
 		created_at: 1, 
 		dead: false
@@ -45,7 +45,6 @@ socket.on("connection", function(client) {
 
 	client.on("message", function(msg) {
 		var player;
-		
 		for( var i = 0 ; i < game_state.length ; i++ ) {
 			if( game_state[i].object_id === client.sessionId ) {
 				player = game_state[i];
@@ -67,6 +66,27 @@ socket.on("connection", function(client) {
 				player.pos.x++;
 			}
 			if( msg.space ) {
+				var id = "bomb" + uid++;
+				game_state.push ({
+					object_id: id,
+					type: "bomb",
+					pos: {x: player.pos.x, y: player.pos.y},
+					created_at: 1,
+					dead : false
+				});
+
+				setTimeout ( (function () {
+								for (var i = 0; i < game_state.length; i++) {
+									if (game_state[i].object_id === id) {
+										game_state[i].dead = true;
+										socket.broadcast(json(game_state));
+										game_state.splice (i, 1);
+										break;
+									}
+								}
+							}), 1000);
+
+
 			}
 			
 			socket.broadcast(json(game_state));

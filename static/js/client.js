@@ -35,7 +35,39 @@ window.onload = function() {
 			}
 		});
 
-		Crafty.e("player, ServerControls, controls")
+		Crafty.c ("bomb", {
+			init: function () {
+				if (!this.has("2D")) {
+					this.addComponent ("2D");
+				}
+				if (!this.has("Canvas")) {
+					this.addComponent ("Canvas");
+				}
+				if (!this.has("color")) {
+					this.addComponent ("color");
+				}
+
+				this.attr ({
+					x: 0,
+					y: 0,
+					w: 10,
+					h: 10
+				})
+				.color ("green");
+			}
+		});
+
+		Crafty.c ("softwall", {
+			init: function () {
+			}
+		});
+
+		Crafty.c ("hardwall", {
+			init: function () {
+			}
+		});	
+
+		Crafty.e("bomberman, ServerControls, controls")
 			.bind("enterframe", function() {
 			});
 	});
@@ -51,11 +83,11 @@ window.onload = function() {
 		for( var i = 0 ; i < game_state.length ; i++ ) {
 			var obj = game_state[i];
 
-			if( !game_objects[obj.object_id] ) {
-				game_objects[obj.object_id] = Crafty.e("bomberman").attr({x: obj.pos.x, y: obj.pos.y});
-				console.log("new game object: " + obj.object_id);
+			if( !game_objects[obj.object_id] && !obj.dead ) {
+				game_objects[obj.object_id] = Crafty.e( obj.type ).attr({x: obj.pos.x, y: obj.pos.y});
 			} else {
 				if( obj.dead ) {
+					console.log (obj.type);
 					game_objects[obj.object_id].destroy();
 					delete game_objects[obj.object_id];
 				} else {
@@ -116,11 +148,10 @@ window.onload = function() {
 					__controls.space = true;
 				}
 			});
-
-
 			this.bind ("enterframe", function (e) {
 				socket.send (__controls);
 			});
+
 			return this;
 		}
 	});
