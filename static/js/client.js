@@ -18,7 +18,10 @@ window.onload = function() {
     console.log("connect!");
   });
   socket.on("message", function(msg) {
-    console.log("received: " + msg);
+    var game_state = JSON.parse(msg);
+    for( var i = 0 ; i < game_state.length ; i++ ) {
+      console.log(game_state[i].type);
+    }
   });
   socket.on("disconnect", function() {
     console.log("disconnect!");

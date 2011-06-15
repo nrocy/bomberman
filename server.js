@@ -1,4 +1,7 @@
 
+var UPDATES_PER_SEC = 1;
+var json = JSON.stringify;
+
 var http = require("http"),
   io = require("socket.io"),
   sys = require("sys"),
@@ -10,27 +13,25 @@ var server = http.createServer(function(req, res) {
   var url = require("url").parse(req.url);
   var pathfile = url.pathname;
 
-  if( pathfile.search(/^\/static\//) === 0 ) {
-    static_server.serve(req, res);
-  } else {
-    res.writeHead(200, {"Content-Type": "text/html"});
-    res.end("<h1>Hello, world!</h1>");
-  }
+  static_server.serve(req, res);
 });
 
 server.listen(1234);
 
 var socket = io.listen(server);
 socket.on("connection", function(client) {
-  client.send("hello!");
+
+  var game_state = [
+    { object_id: 1, type: "player", pos: {x: 1, y: 1}, created_at: 1, dead: false },
+    { object_id: 2, type: "player", pos: {x: 2, y: 2}, created_at: 2, dead: false },
+    { object_id: 1, type: "bomb",   pos: {x: 2, y: 3}, created_at: 4, dead: false }
+  ];
+
+  client.send(json(game_state));
 
   client.on("message", function(msg) {
-    sys.log("server received: " + msg);
-    socket.broadcast(msg);
+    socket.broadcast(json(game_state));
   });
 
-  sys.log("client connected");
 });
-
-sys.puts("running...");
 
