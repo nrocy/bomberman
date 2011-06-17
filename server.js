@@ -55,16 +55,24 @@ socket.on("connection", function(client) {
 
 		if( player ) {
 			if( msg.up ) {
-				if (player.pos.y > 0) player.pos.y--;
+				if (player.pos.y > 0) {
+					player.pos.y--;
+				}
 			}
 			if( msg.down ) {
-				if (player.pos.y < 400 - 24) player.pos.y++;
+				if (player.pos.y < 400 - 24) {
+					player.pos.y++;
+				}
 			}
 			if( msg.left ) {
-				if (player.pos.x > 0) player.pos.x--;
+				if (player.pos.x > 0) {
+					player.pos.x--;
+				}
 			}
 			if( msg.right ) {
-				if (player.pos.x < 400 - 16) player.pos.x++;
+				if (player.pos.x < 400 - 16) {
+					player.pos.x++;
+				}
 			}
 			if( msg.space ) {
 				var id = "bomb" + uid++;
@@ -85,12 +93,27 @@ socket.on("connection", function(client) {
 
 				setTimeout ( (function () {
 						for (var i = 0; i < game_state.length; i++) {
+								var bomb = null;
 								if (game_state[i].object_id === id) {
 										game_state[i].dead = true;
 										game_state[i].belongsTo.bombsDropped--;
 										socket.broadcast(json(game_state));
-										game_state.splice (i, 1);
+										bomb = game_state.splice (i, 1);
 										break;
+								}
+								if (bomb) {
+										for (var j = 0; j < game_state.length; j++) {
+											if (game_state[j].type==="bomberman") {
+												var vec = {
+														x: game_state[j].pos.x - bomb.pos.x,
+														y: game_state[j].pos.y - bomb.pos.y
+													};
+												if (100 * 100 > vec.x * vec.x + vec.y * vec.y) {
+													game_state[i].dead = true;
+													socket.broadcase (json(game_state)); // todo: fix logic - this is broadcast (at least) twice
+												}
+											}
+										}
 								}
 						}
 				}), 1000);

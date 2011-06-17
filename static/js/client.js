@@ -84,10 +84,6 @@ window.onload = function() {
 
 	socket.connect();
 
-	socket.on("connect", function() {
-		socket.send({up: true});
-	});
-
 	socket.on("message", function(msg) {
 		var game_state = JSON.parse(msg);
 		for( var i = 0 ; i < game_state.length ; i++ ) {
