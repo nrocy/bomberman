@@ -21,10 +21,7 @@ function update_world() {
 	var dt = (new_clock - clock) / 1000.0;
 	clock = new_clock;
 
-	for( var i = 0; i < world.length; i++ ) {
-		world[i].x += world[i].dx * dt;
-		world[i].y += world[i].dy * dt;
-	}
+	shared.update_world(world, dt);
 }
 
 function draw_item(item, col) {

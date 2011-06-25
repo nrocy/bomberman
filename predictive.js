@@ -1,4 +1,6 @@
 
+require.paths.unshift("static/js");
+
 var UPS = 1;
 var VEL = 20;
 var latency = {};
@@ -12,7 +14,8 @@ var clock = new Date().getTime();
 var http = require("http"),
 	io = require("socket.io"),
 	sys = require("sys"),
-	nodestatic = require("node-static");
+	nodestatic = require("node-static"),
+	shared = require("shared");
 
 var static_server = new nodestatic.Server(".");
 
@@ -124,10 +127,7 @@ function send_update() {
 	var dt = (new_clock - clock) / 1000.0;
 	clock = new_clock;
 
-	for( var i = 0; i < world.length; i++ ) {
-		world[i].x += world[i].dx * dt;
-		world[i].y += world[i].dy * dt;
-	}
+	shared.update_world(world, dt);
 
 	io.sockets.emit("update", {
 		stime: clock,
